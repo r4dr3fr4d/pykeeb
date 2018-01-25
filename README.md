@@ -6,8 +6,9 @@ Pykeeb is a python 3 library that provides functions which can be used to genera
 ## Install
 ```# pip install pykeeb```
 
+
 ## Dependencies
-[OpenPySCAD](https://github.com/taxpon/openpyscad) - Python lib to generate [OpenSCAD](https://www.openscad.org) code.
+[OpenPySCAD](https://github.com/taxpon/openpyscad) - Python lib to generate [OpenSCAD](https://www.openscad.org) code.  **don't install from the PyPI (pip), it's out of date** - download the tar.gz, then ```# pip install openpyscad-master.tar.gz```.
 
 ## License
 MIT
