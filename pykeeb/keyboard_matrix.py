@@ -39,14 +39,15 @@ class Keyboard_matrix:
 		"""project the rows onto a circular arc with radius R. Origin of the circle is calculated
 		   to be in the center of the keyboard 1 radius length above it."""
 
+		#maintain key spacing to prevent keycap clashing
 		unit_width=(self.row_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
 
-
+		#focus of the sphere
 		focus_x= self.origin[0]+((self.rows/2)*unit_width)
 		focus_z=self.origin[2]+R
 
-		
+		#loop through the rows and calculate the projected coordinates of each
 		for row in range(self.rows):
 		    x=row*unit_width
 
@@ -60,15 +61,16 @@ class Keyboard_matrix:
 	def project_cols(self, R):
 		"""project the columns onto a circular arc with radius R. Origin of the circle is calculated
 		   to be in the center of the keyboard 1 radius length above it."""
-
+		
+		#maintain key spacing to prevent keycap clashing
 		unit_width=(self.column_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
 
-
+		#focus of the sphere
 		focus_y= self.origin[0]+((self.columns/2)*unit_width)
 		focus_z=self.origin[2]+R
 
-		
+		#loop through the columns and calculate the projected coordinates of each
 		for col in range(self.columns):
 		    y=col*unit_width
 
