@@ -34,7 +34,51 @@ class Keyboard_matrix:
 		self.im = self.indiv_modifiers = [[[0, 0, 0, 0, 0, 0] for a in range(c)] for b in range(r)] 
 		self.ik = self.ignore_keys = [[False for a in range(c)] for b in range(r)] 
 		self.generate()
+		
+	def project_rows(self, R):
+		"""project the rows onto a circular arc with radius R. Origin of the circle is calculated
+		   to be in the center of the keyboard 1 radius length above it."""
 
+		unit_width=(self.row_spacing+self.mount_width)
+		unitangle=degrees(2*asin(unit_width/(2*R)))
+
+
+		focus_x= self.origin[0]+((self.rows/2)*unit_width)
+		focus_z=self.origin[2]+R
+
+		
+		for row in range(self.rows):
+		    x=row*unit_width
+
+		    theta=-(((self.rows-1)/2)-row)*unitangle
+
+		    zt=focus_z-((cos(radians(theta))*R))
+		    xt=(focus_x+(sin(radians(theta))*(R+7)))-x
+		    self.rm[row]= [0, xt, zt, theta, 0, 0]
+
+			
+	def project_cols(self, R):
+		"""project the columns onto a circular arc with radius R. Origin of the circle is calculated
+		   to be in the center of the keyboard 1 radius length above it."""
+
+		unit_width=(self.column_spacing+self.mount_width)
+		unitangle=degrees(2*asin(unit_width/(2*R)))
+
+
+		focus_y= self.origin[0]+((self.columns/2)*unit_width)
+		focus_z=self.origin[2]+R
+
+		
+		for col in range(self.columns):
+		    y=col*unit_width
+
+		    theta=-(((self.columns-1)/2)-col)*unitangle
+
+		    zt=focus_z-((cos(radians(theta))*R))
+		    yt=(focus_y+(sin(radians(theta))*(R+7)))-y
+		    self.cm[col]= [yt, 0, zt, 0, -theta, 0]
+
+			
 	def generate(self):	
 		"""Generates the matrix w.r.t current modifier data.  Needs to be called for any modifier changes to be reflected before calling get_matrix()."""
 
