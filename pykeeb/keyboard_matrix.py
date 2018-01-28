@@ -1,6 +1,7 @@
 from openpyscad import * 
 from .pykeeb import *
 from .keyswitch_mount import *
+from math import asin,sin,cos,acos,degrees,radians
 
 class Keyboard_matrix:
 	def __init__(self, r, c, row_spacing=1.5, column_spacing=1.5, plate_thickness=3, origin=[0,0,0], x_tent=0, y_tent=0, z_tent=0, mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH):
@@ -34,20 +35,18 @@ class Keyboard_matrix:
 		self.im = self.indiv_modifiers = [[[0, 0, 0, 0, 0, 0] for a in range(c)] for b in range(r)] 
 		self.ik = self.ignore_keys = [[False for a in range(c)] for b in range(r)] 
 		self.generate()
-		
-	def project_rows(self, R):
-		"""project the rows onto a circular arc with radius R. Origin of the circle is calculated
-		   to be in the center of the keyboard 1 radius length above it."""
 
-		#maintain key spacing to prevent keycap clashing
+
+	def project_rows(self, R):
+
 		unit_width=(self.row_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
 
-		#focus of the sphere
+
 		focus_x= self.origin[0]+((self.rows/2)*unit_width)
 		focus_z=self.origin[2]+R
 
-		#loop through the rows and calculate the projected coordinates of each
+		
 		for row in range(self.rows):
 		    x=row*unit_width
 
@@ -57,20 +56,16 @@ class Keyboard_matrix:
 		    xt=(focus_x+(sin(radians(theta))*(R+7)))-x
 		    self.rm[row]= [0, xt, zt, theta, 0, 0]
 
-			
 	def project_cols(self, R):
-		"""project the columns onto a circular arc with radius R. Origin of the circle is calculated
-		   to be in the center of the keyboard 1 radius length above it."""
-		
-		#maintain key spacing to prevent keycap clashing
+
 		unit_width=(self.column_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
 
-		#focus of the sphere
+
 		focus_y= self.origin[0]+((self.columns/2)*unit_width)
 		focus_z=self.origin[2]+R
 
-		#loop through the columns and calculate the projected coordinates of each
+		
 		for col in range(self.columns):
 		    y=col*unit_width
 
@@ -80,7 +75,9 @@ class Keyboard_matrix:
 		    yt=(focus_y+(sin(radians(theta))*(R+7)))-y
 		    self.cm[col]= [yt, 0, zt, 0, -theta, 0]
 
-			
+
+
+
 	def generate(self):	
 		"""Generates the matrix w.r.t current modifier data.  Needs to be called for any modifier changes to be reflected before calling get_matrix()."""
 
@@ -155,3 +152,53 @@ class Keyboard_matrix:
 				if column < self.columns - 1:
 					x += self.column_hulls[row][column]
 		return x
+
+	def get_plate(self): #needs more elegant solution, maybe using __add__?
+			x = Cube(0) 
+			for column in range(self.columns):
+				for row in range(self.rows):
+					x += self.sm[row][column].get_switch_at_location() 
+					if column < self.columns - 1:
+						x += self.column_hulls[row][column]
+					if row < self.rows - 1:
+						x += self.row_hulls[row][column]
+						if column < self.columns - 1:
+							x += self.corner_hulls[row][column]
+			return x
+
+
+	def get_walls(self): #needs more elegant solution, maybe using __add__?
+			x = Cube(0) 
+			for column in range(self.columns):
+				for row in range(self.rows):
+					if row == 0:
+						x += self.back_wall[column]
+						if column < self.columns - 1:
+							x += self.back_wall_hulls[column]
+						if column == 0:
+							x += self.back_left_corner
+						if column == self.columns - 1:
+							x += self.back_right_corner
+					if row == self.rows - 1:
+						x += self.front_wall[column]
+						if column < self.columns - 1:
+							x += self.front_wall_hulls[column]
+						if column == 0:
+							x += self.front_left_corner
+						if column == self.columns - 1:
+							x += self.front_right_corner
+					if column == 0:
+						x += self.left_wall[row]
+						if row < self.rows - 1:
+							x += self.left_wall_hulls[row]
+					if column == self.columns - 1:
+						x += self.right_wall[row]
+						if row < self.rows - 1:
+							x += self.right_wall_hulls[row]
+					# if row < self.rows - 1:
+					# 	x += self.row_hulls[row][column]
+					# 	if column < self.columns - 1:
+					# 		x += self.corner_hulls[row][column]
+					# if column < self.columns - 1:
+					# 	x += self.column_hulls[row][column]
+			return x
