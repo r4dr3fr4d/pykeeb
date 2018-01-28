@@ -7,7 +7,7 @@ class Keyswitch_mount:
 	alps_keyswitch = Import('/usr/models/matias.stl').color('Gray')
 	mx_keyswitch = Import('/usr/models/cherry.stl').color('Gray')
 	dsa_key = Import('/usr/models/dsa_1u.stl').color('White') #18x18x8mm 
-	def __init__(self, transformations, ik=False, switch_type='alps', mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH):
+	def __init__(self, transformations, ik=False, switch_type='mx', mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH):
 		"""Sets up single switch-mount geometry, with transformations, W.R.T. switch type."""
 		mx_length = 14.4
 		mx_width = 14.4
@@ -17,6 +17,15 @@ class Keyswitch_mount:
 		self.mount_width = mount_width
 		self.switch_type = switch_type
 		mx_hole = Cube([mx_width, mx_length, self.thickness], center=True)
+
+		nipr=((Cylinder(2.75,1,_fn=60).rotate([0,90,90]).translate([-7.2,-1.475,-0.5])))+\
+		     (Cube([1,2.75,3]).rotate([0,-30,0]).translate([-7.2,-1.475,-0.5]))
+
+		nipl=nipr.mirror(-1)
+
+		mx_hole=mx_hole-nipl-nipr
+
+
 		alps_hole = Cube([alps_width, alps_length, self.thickness], center=True)
 		if switch_type == 'mx':
 			self.switch_mount = Cube([self.mount_width, self.mount_length, self.thickness], center=True) - mx_hole
