@@ -3,7 +3,7 @@ from .pykeeb import *
 from .keyswitch_mount import *
 
 class Keyboard_arc:
-	def __init__(self, columns, neg_columns, rows, arc_length, arc_angle, z_arc_length=0, z_arc_angle=0, row_spacing=2, column_spacing=2, plate_thickness=3, origin=[0,0,0], x_tent=0, y_tent=0, z_tent=0, mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH):
+	def __init__(self, columns, neg_columns, rows, arc_length, arc_angle, z_arc_length=0, z_arc_angle=0, row_spacing=2, column_spacing=2, plate_thickness=3, origin=[0,0,0], x_tent=0, y_tent=0, z_tent=0, mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH, switch_type='alps', mx_notches=True):
 		"""Builds an arc of keyswitch mounts, curvature defined by arc_length, with arc_angle degrees between each mount.  neg_columns allows for mounts to be created on both sides of the origin.  Can also curve in against it's own normal dimension using z_arc_length and z_arc_angle, allowing for some nice sloped key arcs for the thumbs.  Otherwise the same as Keyboard_matrix().  ***NOTE:  Only tested with one row despite accepting multiple rows.***"""
 		self.columns = columns + neg_columns
 		self.rows = rows
@@ -33,6 +33,8 @@ class Keyboard_arc:
 		self.side_extrude = 2
 		self.wall_x = 0.5 #for extra wall_hull thickness
 		self.wall_y = 0.5 #for extra wall_hull thickness
+		self.switch_type = switch_type
+		self.mx_notches = mx_notches
 
 		self.rm = row_modifiers = [[0, 0, 0, 0, 0, 0]  for b in range(rows)] 
 		self.cm = column_modifiers = [[0, 0, 0, 0, 0, 0]  for a in range(columns + neg_columns)] 
@@ -46,7 +48,8 @@ class Keyboard_arc:
 
 		self.transformations = [[[modifiers[row][column][:6], [0, self.arc_length, 0,0,0,0], [0, -self.arc_length, 0,0,0, -self.arc_angle * (column - self.neg_columns)], [self.origin[0], self.origin[1], self.origin[2], self.x_tent, self.y_tent, self.z_tent]] for column in range(self.columns)] for row in range(self.rows)] 
 
-		self.sm = self.switch_matrix = [[Keyswitch_mount(self.transformations[row][column], modifiers[row][column][6]) for column in range(self.columns)] for row in range(self.rows)]
+		#def __init__(self, transformations, ik=False, switch_type='alps', mount_length=DSA_KEY_WIDTH, mount_width=DSA_KEY_WIDTH, mx_notches=True):
+		self.sm = self.switch_matrix = [[Keyswitch_mount(self.transformations[row][column], modifiers[row][column][6], self.switch_type, self.mount_length, self.mount_width, self.mx_notches) for column in range(self.columns)] for row in range(self.rows)]
 
 		self.row_hulls = [[(self.sm[row][column].get_front(self.hull_thickness) + self.sm[row+1][column].get_back(self.hull_thickness)).hull() for column in range(self.columns)] for row in range(self.rows-1)] 
 		self.column_hulls = [[(self.sm[row][column].get_right(self.hull_thickness) + self.sm[row][column+1].get_left(self.hull_thickness)).hull() for column in range(self.columns - 1)] for row in range(self.rows)] 
