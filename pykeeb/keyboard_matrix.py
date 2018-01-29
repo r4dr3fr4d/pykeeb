@@ -163,47 +163,47 @@ class Keyboard_matrix:
 		return x
 
 	def get_plate(self): #needs more elegant solution, maybe using __add__?
-	    """"Returns the union of the keyswitch mounts and their connecting hulls to form a plate"""
-			x = Cube(0) 
-			for column in range(self.columns):
-				for row in range(self.rows):
-					x += self.sm[row][column].get_switch_at_location() 
+		"""Returns the union of the keyswitch mounts and their connecting hulls to form a plate"""
+		x = Cube(0)
+		for column in range(self.columns):
+			for row in range(self.rows):
+				x += self.sm[row][column].get_switch_at_location() 
+				if column < self.columns - 1:
+					x += self.column_hulls[row][column]
+				if row < self.rows - 1:
+					x += self.row_hulls[row][column]
 					if column < self.columns - 1:
-						x += self.column_hulls[row][column]
-					if row < self.rows - 1:
-						x += self.row_hulls[row][column]
-						if column < self.columns - 1:
-							x += self.corner_hulls[row][column]
-			return x
+						x += self.corner_hulls[row][column]
+		return x
 
 
 	def get_walls(self): #needs more elegant solution, maybe using __add__?
-         """Reterns the union of all the keyboard side walls and their connecting hulls to form a case"""
-			x = Cube(0) 
-			for column in range(self.columns):
-				for row in range(self.rows):
-					if row == 0:
-						x += self.back_wall[column]
-						if column < self.columns - 1:
-							x += self.back_wall_hulls[column]
-						if column == 0:
-							x += self.back_left_corner
-						if column == self.columns - 1:
-							x += self.back_right_corner
-					if row == self.rows - 1:
-						x += self.front_wall[column]
-						if column < self.columns - 1:
-							x += self.front_wall_hulls[column]
-						if column == 0:
-							x += self.front_left_corner
-						if column == self.columns - 1:
-							x += self.front_right_corner
+		"""Returns the union of all the keyboard side walls and their connecting hulls to form a case"""
+		x = Cube(0)
+		for column in range(self.columns):
+			for row in range(self.rows):
+				if row == 0:
+					x += self.back_wall[column]
+					if column < self.columns - 1:
+						x += self.back_wall_hulls[column]
 					if column == 0:
-						x += self.left_wall[row]
-						if row < self.rows - 1:
-							x += self.left_wall_hulls[row]
+						x += self.back_left_corner
 					if column == self.columns - 1:
-						x += self.right_wall[row]
-						if row < self.rows - 1:
-							x += self.right_wall_hulls[row]
-			return x
+						x += self.back_right_corner
+				if row == self.rows - 1:
+					x += self.front_wall[column]
+					if column < self.columns - 1:
+						x += self.front_wall_hulls[column]
+					if column == 0:
+						x += self.front_left_corner
+					if column == self.columns - 1:
+						x += self.front_right_corner
+				if column == 0:
+					x += self.left_wall[row]
+					if row < self.rows - 1:
+						x += self.left_wall_hulls[row]
+				if column == self.columns - 1:
+					x += self.right_wall[row]
+					if row < self.rows - 1:
+						x += self.right_wall_hulls[row]
+		return x
