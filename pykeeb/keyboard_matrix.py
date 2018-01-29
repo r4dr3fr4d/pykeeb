@@ -38,6 +38,9 @@ class Keyboard_matrix:
 
 
 	def project_rows(self, R):
+		"""This function 2-dimensionally projects the keyboard rows onto a circle on the y and z axes with radius R."""
+
+		#TODO: Make the focus of the circle adjustable
 
 		unit_width=(self.row_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
@@ -57,6 +60,9 @@ class Keyboard_matrix:
 		    self.rm[row]= [0, xt, zt, theta, 0, 0]
 
 	def project_cols(self, R):
+		"""This function 2-dimensionally projects the keyboard columns onto a circle  with radius R on the y-z axes."""
+
+		#TODO: Make the focus of the circle adjustable
 
 		unit_width=(self.column_spacing+self.mount_width)
 		unitangle=degrees(2*asin(unit_width/(2*R)))
@@ -154,6 +160,7 @@ class Keyboard_matrix:
 		return x
 
 	def get_plate(self): #needs more elegant solution, maybe using __add__?
+	    """"Returns the union of the keyswitch mounts and their connecting hulls to form a plate"""
 			x = Cube(0) 
 			for column in range(self.columns):
 				for row in range(self.rows):
@@ -168,6 +175,7 @@ class Keyboard_matrix:
 
 
 	def get_walls(self): #needs more elegant solution, maybe using __add__?
+         """Reterns the union of all the keyboard side walls and their connecting hulls to form a case"""
 			x = Cube(0) 
 			for column in range(self.columns):
 				for row in range(self.rows):
@@ -195,10 +203,4 @@ class Keyboard_matrix:
 						x += self.right_wall[row]
 						if row < self.rows - 1:
 							x += self.right_wall_hulls[row]
-					# if row < self.rows - 1:
-					# 	x += self.row_hulls[row][column]
-					# 	if column < self.columns - 1:
-					# 		x += self.corner_hulls[row][column]
-					# if column < self.columns - 1:
-					# 	x += self.column_hulls[row][column]
 			return x
