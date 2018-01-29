@@ -40,7 +40,7 @@ class Keyboard_matrix:
 
 
 	def arc_rows(self, R):
-		"""This function 2-dimensionally projects the keyboard rows onto a circle with radius R on the y-z axes."""
+		"""This function 2-dimensionally projects the keyboard rows onto a circle with radius R on the x-z axes."""
 
 		#TODO: Make the focus of the circle adjustable
 
@@ -62,7 +62,7 @@ class Keyboard_matrix:
 		    self.rm[row]= [0, xt, zt, theta, 0, 0]
 
 	def arc_cols(self, R):
-		"""This function 2-dimensionally projects the keyboard columns onto a circle with radius R on the x-z axes."""
+		"""This function 2-dimensionally projects the keyboard columns onto a circle with radius R on the y-z axes."""
 
 		#TODO: Make the focus of the circle adjustable
 
