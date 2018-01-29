@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='pykeeb',
-      version='0.1',
+      version='0.1.1',
       description='Python library to help generate OpenSCAD models of mechanical keyboard plates.',
       url='http://github.com/raycewest/pykeeb',
       author='Rayce West',
