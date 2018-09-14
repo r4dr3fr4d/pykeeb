@@ -108,8 +108,9 @@ class Keyswitch_mount:
         Returns Cube (rect. prism) of width 'thickness' that sticks out of 
         the mount by length of 'extrude', specified by a 
         given 'side' (front, back, left, or right).  
-        'extend' will hull the returned Cube with 
-        the actual side of the mount.
+        'extend' will extend the returned Cube to the actual corner 
+        of the mount, which is useful for creating a wall that isn't 
+        super thick and allows for extra space, say for hand-wiring.
         """
         if extrude > thickness and extend == True:
             thickness = extrude
@@ -164,34 +165,34 @@ class Keyswitch_mount:
         extrudes of the mount's corner (specified 
         by fl, fr, bl, or br, for 'front left', 'front right', etc) 
         by lengths x_extrude and y_extrude.  
-        'extend' will hull the returned Cube with the actual corner 
-        of the mount.
+        'extend' will extend the returned Cube to the actual corner 
+        of the mount, which is useful for creating a wall that isn't 
+        super thick and allows for extra space, say for hand-wiring.
         """
         if extend == True:
             if x_extrude > x:
                 x = x_extrude
             if y_extrude > y:
                 y = y_extrude
-        corner = Cube([x, y, self.thickness])
+
+        corner = Cube([x, y, self.thickness]).translate([0,0,-self.thickness/2])
+
+        corner = corner.translate([  #case 'fr'
+            (self.mount_width / 2) - x + x_extrude,
+            (self.mount_length / 2) - y + y_extrude, 0
+        ])
+
         if position == 'fl':
-            corner = corner.translate([
-                -self.mount_width / 2 - x_extrude,
-                self.mount_length / 2 - y + y_extrude, -self.thickness / 2
-            ])
-        elif position == 'fr':
-            corner = corner.translate([
-                self.mount_width / 2 - x + x_extrude,
-                self.mount_length / 2 - y + y_extrude, -self.thickness / 2
-            ])
-        elif position == 'bl':
-            corner = corner.translate([
-                -self.mount_width / 2 - x_extrude,
-                -self.mount_length / 2 - y_extrude, -self.thickness / 2
-            ])
+            corner = corner.mirror([1,0,0])
+
         elif position == 'br':
-            corner = corner.translate([
-                self.mount_width / 2 - x + x_extrude,
-                -self.mount_length / 2 - y_extrude, -self.thickness / 2
-            ])
+            corner = corner.mirror([0,1,0])
+
+        elif position == 'bl':
+            corner = corner.mirror([1,0,0])
+            corner = corner.mirror([0,1,0])
+
         if self.ignore_key == True: corner = corner.disable()
+
+
         return self.transform(corner)
