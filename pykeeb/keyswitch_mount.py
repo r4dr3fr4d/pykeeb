@@ -93,7 +93,7 @@ class Keyswitch_mount:
                 self.alps_keyswitch.rotate([180, 0, 90]).translate([0, 0, 9]))
         if self.switch_type == 'mx':
             return self.transform(
-                self.mx_keyswitch.rotate([180, 0, 90]).translate([0, 0, 9]))
+                self.mx_keyswitch.translate([0, 0, 14.5]))
 
     def get_keycap(self, down=False):
         """
