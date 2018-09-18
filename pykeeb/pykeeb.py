@@ -3,11 +3,11 @@ from openpyscad import *
 
 DSA_KEY_WIDTH = 18.415
 
-def project(piece): #openpyscad needs the projection feature added to it
-	"""
-    Hack that implements 3D to 2D projection feature for positive geometry 
-    to the xy plane.  Needs to be implemented in openpyscad.
+def project(piece, size=500): #Is this function really necessary?
     """
-	return (piece + piece.translate([0,0,-100])).hull() 
-           + Cube(0) 
-           - Cube([500, 500, 250], center=True).translate([0,0,-125])
+    Mirrors (xy), hulls, and subtracts beneath the xy-plane, in that order.
+    Allows for creation of sides/walls.
+    Size defaults to 'arbitrarily large'.
+    """
+    return ((piece + piece.mirror([0,0,1])).hull() 
+        - Cube([size, size, size], center=True).translate([0,0,-size/2]))
